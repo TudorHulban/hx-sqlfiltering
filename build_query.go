@@ -10,12 +10,30 @@ func BuildQuery(base string, filters ...Operation) (string, []any) {
 		return base, []any{}
 	}
 
-	args := make([]any, len(filters), len(filters))
-	clauses := make([]string, len(filters), len(filters))
+	args := make([]any, 0)
+	clauses := make([]string, 0)
 
 	for ix, f := range filters {
-		clauses[ix] = f.Operation() + strconv.Itoa(ix+1) + f.CloseOperation()
-		args[ix] = f.GetArguments()
+		if f.IsOrdering() {
+			return base +
+					ternary(len(args) > 0, _Where, "") +
+					strings.Join(clauses, _And) +
+					f.CloseOperation(),
+				args
+		}
+
+		operation := f.Operation()
+
+		clause := f.Operation() + strconv.Itoa(ix+1) + ternary(
+			strings.Contains(operation, "("),
+
+			")",
+			"",
+		)
+
+		clauses = append(clauses, clause)
+
+		args = append(args, f.GetArguments())
 	}
 
 	return base + _Where + strings.Join(clauses, _And), args

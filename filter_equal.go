@@ -17,3 +17,7 @@ func (f FilterEqual) CloseOperation() string {
 func (f FilterEqual) GetArguments() any {
 	return f.Arguments
 }
+
+func (f FilterEqual) IsOrdering() bool {
+	return false
+}

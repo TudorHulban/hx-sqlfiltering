@@ -33,3 +33,7 @@ func (f FilterExists) CloseOperation() string {
 func (f FilterExists) GetArguments() any {
 	return f.Arguments
 }
+
+func (f FilterExists) IsOrdering() bool {
+	return false
+}

@@ -78,6 +78,36 @@ func TestBuildQuery(t *testing.T) {
 			wantSql:  "select * from users where age >= $1",
 			wantArgs: []any{int64(30)},
 		},
+		{
+			name: "8. multi-column ordering with no additional filtering",
+			base: "select * from tickets",
+			filters: []Operation{
+				FilterOrderByColumns{
+					Columns:    []string{"priority", "created_at"},
+					Descending: []bool{false, true},
+				},
+			},
+			wantSql:  "select * from tickets order by priority asc, created_at desc",
+			wantArgs: []any{},
+		},
+		{
+			name: "9. multi-column ordering with mixed directions",
+			base: "select * from tickets",
+			filters: []Operation{
+				FilterExists{
+					ColumnJoin: "project_id",
+					Table:      "projects",
+					SubColumn:  "id",
+					Arguments:  100,
+				},
+				FilterOrderByColumns{
+					Columns:    []string{"priority", "created_at"},
+					Descending: []bool{false, true},
+				},
+			},
+			wantSql:  "select * from tickets where exists (select 1 from projects b where b.id = project_id and b.id = $1) order by priority asc, created_at desc",
+			wantArgs: []any{100},
+		},
 	}
 
 	for _, tt := range tests {
