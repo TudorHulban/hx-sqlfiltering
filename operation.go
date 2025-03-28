@@ -1,7 +1,7 @@
 package hxsqlfiltering
 
 type Operation interface {
-	Operation() string
+	Operation(number int) string
 	CloseOperation() string
 	GetArguments() any
 	IsOrdering() bool

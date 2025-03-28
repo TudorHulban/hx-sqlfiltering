@@ -44,9 +44,9 @@ func TestBuildQuery(t *testing.T) {
 			name: "4. subquery filter",
 			base: "select * from tickets",
 			filters: []Operation{
-				FilterExists{ColumnJoin: "id", Table: "blocks", SubColumn: "id", Arguments: int64(456)},
+				FilterExists{ColumnJoin: "id", TableJoin: "blocks", SubColumn: "id", Arguments: int64(456)},
 			},
-			wantSql:  "select * from tickets where exists (select 1 from blocks b where b.id = id and b.id = $1)",
+			wantSql:  "select * from tickets where exists (select 1 from blocks jt where jt.id = id and jt.id = $1)",
 			wantArgs: []any{int64(456)},
 		},
 		{
@@ -55,9 +55,9 @@ func TestBuildQuery(t *testing.T) {
 			filters: []Operation{
 				FilterEqual{Column: "id", Arguments: int64(123)},
 				FilterLike{Column: "name", Arguments: "issue%"},
-				FilterExists{ColumnJoin: "ticket_id", Table: "events", SubColumn: "id", Arguments: int64(789)},
+				FilterExists{ColumnJoin: "ticket_id", TableJoin: "events", SubColumn: "id", Arguments: int64(789)},
 			},
-			wantSql:  "select * from tickets where id = $1 and name ilike $2 and exists (select 1 from events b where b.id = ticket_id and b.id = $3)",
+			wantSql:  "select * from tickets where id = $1 and name ilike $2 and exists (select 1 from events jt where jt.id = ticket_id and jt.id = $3)",
 			wantArgs: []any{int64(123), "issue%", int64(789)},
 		},
 		{
@@ -96,7 +96,7 @@ func TestBuildQuery(t *testing.T) {
 			filters: []Operation{
 				FilterExists{
 					ColumnJoin: "project_id",
-					Table:      "projects",
+					TableJoin:  "projects",
 					SubColumn:  "id",
 					Arguments:  100,
 				},
@@ -105,7 +105,7 @@ func TestBuildQuery(t *testing.T) {
 					Descending: []bool{false, true},
 				},
 			},
-			wantSql:  "select * from tickets where exists (select 1 from projects b where b.id = project_id and b.id = $1) order by priority asc, created_at desc",
+			wantSql:  "select * from tickets where exists (select 1 from projects jt where jt.id = project_id and jt.id = $1) order by priority asc, created_at desc",
 			wantArgs: []any{100},
 		},
 	}

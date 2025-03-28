@@ -1,13 +1,15 @@
 package hxsqlfiltering
 
+import "strconv"
+
 type FilterLike struct {
 	Arguments string
 
 	Column string
 }
 
-func (f FilterLike) Operation() string {
-	return f.Column + " ilike $"
+func (f FilterLike) Operation(number int) string {
+	return f.Column + " ilike $" + strconv.Itoa(number+1)
 }
 
 func (f FilterLike) CloseOperation() string {

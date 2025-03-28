@@ -56,7 +56,6 @@ func TestSQLFilteringWithSQLite(t *testing.T) {
 		t.Run(
 			tt.name,
 			func(t *testing.T) {
-				// Generate the SQL
 				generatedSQL, generatedArgs := BuildQuery(
 					tt.base,
 					tt.filters...,
@@ -64,7 +63,6 @@ func TestSQLFilteringWithSQLite(t *testing.T) {
 				require.Equal(t, tt.wantSql, generatedSQL)
 				require.Equal(t, tt.wantArgs, generatedArgs)
 
-				// Execute the query against SQLite
 				rows, err := db.Query(generatedSQL, generatedArgs...)
 				require.NoError(t, err)
 				defer rows.Close()

@@ -1,27 +1,32 @@
 package hxsqlfiltering
 
-import "strings"
+import (
+	"strconv"
+	"strings"
+)
 
 type FilterExists struct {
 	Arguments any
 
 	ColumnJoin string
-	Table      string
+	TableJoin  string
 	SubColumn  string
 }
 
-func (f FilterExists) Operation() string {
+func (f FilterExists) Operation(number int) string {
 	var b strings.Builder
 
 	b.WriteString("exists (select 1 from ")
-	b.WriteString(f.Table)
-	b.WriteString(" b where b.")
+	b.WriteString(f.TableJoin)
+	b.WriteString(" jt where jt.")
 	b.WriteString(f.SubColumn)
 	b.WriteString(" = ")
 	b.WriteString(f.ColumnJoin)
-	b.WriteString(" and b.")
+	b.WriteString(" and jt.")
 	b.WriteString(f.SubColumn)
 	b.WriteString(" = $")
+	b.WriteString(strconv.Itoa(number + 1))
+	b.WriteString(")")
 
 	return b.String()
 }

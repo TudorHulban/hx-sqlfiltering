@@ -1,7 +1,6 @@
 package hxsqlfiltering
 
 import (
-	"strconv"
 	"strings"
 )
 
@@ -22,16 +21,10 @@ func BuildQuery(base string, filters ...Operation) (string, []any) {
 				args
 		}
 
-		operation := f.Operation()
-
-		clause := f.Operation() + strconv.Itoa(ix+1) + ternary(
-			strings.Contains(operation, "("),
-
-			")",
-			"",
+		clauses = append(
+			clauses,
+			f.Operation(ix),
 		)
-
-		clauses = append(clauses, clause)
 
 		args = append(args, f.GetArguments())
 	}

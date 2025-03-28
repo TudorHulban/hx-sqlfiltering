@@ -1,13 +1,20 @@
 package hxsqlfiltering
 
+import "strconv"
+
 type FilterGreaterOrEqual struct {
 	Arguments any
 
 	Column string
+	Strict bool
 }
 
-func (f FilterGreaterOrEqual) Operation() string {
-	return f.Column + " >= $"
+func (f FilterGreaterOrEqual) Operation(number int) string {
+	if f.Strict {
+		return f.Column + " > $" + strconv.Itoa(number+1)
+	}
+
+	return f.Column + " >= $" + strconv.Itoa(number+1)
 }
 
 func (f FilterGreaterOrEqual) CloseOperation() string {

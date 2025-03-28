@@ -1,7 +1,6 @@
 package hxsqlfiltering
 
 import (
-	"fmt"
 	"strings"
 )
 
@@ -10,10 +9,11 @@ type FilterOrderByColumn struct {
 	Descending bool
 }
 
-func (f FilterOrderByColumn) Operation() string {
+func (f FilterOrderByColumn) Operation(_ int) string {
 	if f.Descending {
 		return sprintf("order by %s desc", f.Column)
 	}
+
 	return sprintf("order by %s asc", f.Column)
 }
 
@@ -34,19 +34,23 @@ type FilterOrderByColumns struct {
 	Descending []bool
 }
 
-func (f FilterOrderByColumns) Operation() string {
+func (f FilterOrderByColumns) Operation(number int) string {
 	return ""
 }
 
 func (f FilterOrderByColumns) CloseOperation() string {
 	var clauses []string
+
 	for i, col := range f.Columns {
 		dir := "asc"
+
 		if i < len(f.Descending) && f.Descending[i] {
 			dir = "desc"
 		}
-		clauses = append(clauses, fmt.Sprintf("%s %s", col, dir))
+
+		clauses = append(clauses, sprintf("%s %s", col, dir))
 	}
+
 	return " order by " + strings.Join(clauses, ", ")
 }
 
