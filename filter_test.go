@@ -1,6 +1,7 @@
 package hxsqlfiltering
 
 import (
+	"database/sql"
 	"reflect"
 	"testing"
 
@@ -107,6 +108,43 @@ func TestBuildQuery(t *testing.T) {
 			},
 			wantSql:  "select * from tickets where exists (select 1 from projects jt where jt.id = project_id and jt.id = $1) order by priority asc, created_at desc",
 			wantArgs: []any{100},
+		},
+		{
+			name: "10. pagination with limit only",
+			base: "select * from users",
+			filters: []Operation{
+				FilterPagination{
+					First: 10,
+					After: sql.NullInt16{Valid: false},
+				},
+			},
+			wantSql:  "select * from users limit 10;",
+			wantArgs: []any{},
+		},
+		{
+			name: "11. pagination with limit and offset",
+			base: "select * from users",
+			filters: []Operation{
+				FilterPagination{
+					First: 5,
+					After: sql.NullInt16{Int16: 10, Valid: true},
+				},
+			},
+			wantSql:  "select * from users limit 5 offset 10;",
+			wantArgs: []any{},
+		},
+		{
+			name: "12. pagination with limit and offset",
+			base: "select * from users",
+			filters: []Operation{
+				FilterEqual{Column: "id", Arguments: int64(123)},
+				FilterPagination{
+					First: 5,
+					After: sql.NullInt16{Int16: 10, Valid: true},
+				},
+			},
+			wantSql:  "select * from users where id = $1 limit 5 offset 10;",
+			wantArgs: []any{int64(123)},
 		},
 	}
 

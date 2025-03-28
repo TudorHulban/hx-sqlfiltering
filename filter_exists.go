@@ -42,3 +42,7 @@ func (f FilterExists) GetArguments() any {
 func (f FilterExists) IsOrdering() bool {
 	return false
 }
+
+func (f FilterExists) IsLimit() bool {
+	return false
+}

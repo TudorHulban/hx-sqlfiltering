@@ -29,6 +29,10 @@ func (f FilterOrderByColumn) IsOrdering() bool {
 	return true
 }
 
+func (f FilterOrderByColumn) IsLimit() bool {
+	return false
+}
+
 type FilterOrderByColumns struct {
 	Columns    []string
 	Descending []bool
@@ -60,4 +64,8 @@ func (f FilterOrderByColumns) GetArguments() any {
 
 func (f FilterOrderByColumns) IsOrdering() bool {
 	return true
+}
+
+func (f FilterOrderByColumns) IsLimit() bool {
+	return false
 }

@@ -23,3 +23,7 @@ func (f FilterLike) GetArguments() any {
 func (f FilterLike) IsOrdering() bool {
 	return false
 }
+
+func (f FilterLike) IsLimit() bool {
+	return false
+}

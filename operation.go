@@ -5,6 +5,7 @@ type Operation interface {
 	CloseOperation() string
 	GetArguments() any
 	IsOrdering() bool
+	IsLimit() bool
 }
 
 var _ Operation = FilterEqual{}
@@ -15,3 +16,5 @@ var _ Operation = FilterGreaterOrEqual{}
 
 var _ Operation = FilterOrderByColumn{}
 var _ Operation = FilterOrderByColumns{}
+
+var _ Operation = FilterPagination{}

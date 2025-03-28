@@ -28,3 +28,7 @@ func (f FilterGreaterOrEqual) GetArguments() any {
 func (f FilterGreaterOrEqual) IsOrdering() bool {
 	return false
 }
+
+func (f FilterGreaterOrEqual) IsLimit() bool {
+	return false
+}
